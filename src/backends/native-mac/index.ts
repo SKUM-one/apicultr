@@ -16,12 +16,14 @@ import {
   parseDisplayBounds,
 } from "./grid.ts";
 
-import closeByTitlesScript from "./applescripts/close-by-titles.applescript" with { type: "text" };
-import focusAndPasteScript from "./applescripts/focus-and-paste.applescript" with { type: "text" };
-import launchWindowScript from "./applescripts/launch-window.applescript" with { type: "text" };
-import paneContentsScript from "./applescripts/pane-contents.applescript" with { type: "text" };
-import queryDisplayScript from "./applescripts/query-display.applescript" with { type: "text" };
-import windowExistsScript from "./applescripts/window-exists.applescript" with { type: "text" };
+import {
+  CLOSE_BY_TITLES as closeByTitlesScript,
+  FOCUS_AND_PASTE as focusAndPasteScript,
+  LAUNCH_WINDOW as launchWindowScript,
+  PANE_CONTENTS as paneContentsScript,
+  QUERY_DISPLAY as queryDisplayScript,
+  WINDOW_EXISTS as windowExistsScript,
+} from "./scripts.ts";
 
 /**
  * Native-Mac backend: one Terminal.app window per persona, arranged in a grid sized to
