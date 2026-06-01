@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - "checkpoint-*"
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-typecheck-unit:
+    name: lint + typecheck + unit (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bunx biome check src tests scripts
+      - run: bun test tests/unit
+
+  integration-tmux:
+    name: integration (tmux, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: lint-typecheck-unit
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Install tmux (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y tmux
+      - name: Install tmux (macOS)
+        if: runner.os == 'macOS'
+        run: brew install tmux || brew upgrade tmux
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: bun test tests/integration/tmux-lifecycle.test.ts tests/integration/sub-hive.test.ts tests/integration/native-grid.test.ts
+
+  build-artifacts:
+    name: build binaries (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: lint-typecheck-unit
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      - run: ./bin/apicultr version
+      - run: ./bin/hive --help
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apicultr-bin-${{ matrix.os }}
+          path: bin/
+          if-no-files-found: error
