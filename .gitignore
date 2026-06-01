@@ -1,0 +1,12 @@
+node_modules/
+bun.lockb
+bin/
+*.tgz
+.DS_Store
+.env
+.env.*
+!.env.example
+coverage/
+*.log
+.bun-tag
+.*.bun-build

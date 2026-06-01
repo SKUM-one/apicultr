@@ -1,0 +1,34 @@
+{
+  "name": "apicultr",
+  "version": "0.1.0-alpha.1",
+  "description": "apicultr keeps your hive. You are the king.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "apicultr": "./bin/apicultr",
+    "hive": "./bin/hive"
+  },
+  "scripts": {
+    "build": "bun run scripts/build.ts",
+    "build:apicultr": "bun build --compile --target=bun src/bin/apicultr.ts --outfile bin/apicultr",
+    "build:hive": "bun build --compile --target=bun src/bin/hive.ts --outfile bin/hive",
+    "test": "bun test",
+    "test:unit": "bun test tests/unit",
+    "test:integration": "bun test tests/integration",
+    "lint": "biome check src tests scripts",
+    "format": "biome format --write src tests scripts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}
